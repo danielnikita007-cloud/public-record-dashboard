@@ -1,0 +1,9 @@
+[
+  { "code": "Art. 21", "title": "Right to Life", "description": "Interpreted by courts to include the right to a healthy environment; basis for forest and pollution PILs (e.g. T.N. Godavarman Thirumulpad v. Union of India)." },
+  { "code": "Art. 15 / 16", "title": "Equality & Reservation", "description": "Basis for prosecutions where fraudulent caste certificates were used to claim reserved seats, posts, or benefits." },
+  { "code": "Forest (Conservation) Act, 1980", "title": "Forest Clearance", "description": "Requires central government approval before forest land is diverted to non-forest use; diversion without approval is the basis for illegal-felling cases." },
+  { "code": "Prevention of Corruption Act, 1988 (amended 2018)", "title": "Anti-Corruption", "description": "Covers bribery and criminal misconduct by public servants; basis for chargesheets in bureaucratic corruption cases." },
+  { "code": "IPC 420 / BNS Sec. 318", "title": "Cheating", "description": "Commonly invoked in paper-leak and fraudulent-certificate prosecutions." },
+  { "code": "RTI Act, 2005", "title": "Right to Information", "description": "Primary statutory mechanism used to obtain the government records cited on this site." },
+  { "code": "Competition Act, 2002", "title": "Anti-Monopoly / Fair Trade", "description": "Governs Competition Commission of India (CCI) findings on market dominance and anti-competitive conduct; only CCI/court findings are cited here, not market-share commentary." }
+]
