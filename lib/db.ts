@@ -1,7 +1,7 @@
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import path from 'path';
-import { Case } from './types';
+import { Case, StatEntry } from './types';
 
 interface DbSchema {
   cases: Case[];
@@ -17,13 +17,16 @@ export async function getDb() {
   return db;
 }
 
-/*
-  PRODUCTION NOTE:
-  This file-based store is for local development and the initial pilot only.
-  Once you deploy for real public traffic, swap this module for a Postgres
-  client (e.g. `pg` or Supabase JS client) pointed at the schema.sql /
-  legal reference tables already provided in the project docs. The shape
-  of `Case` in lib/types.ts matches the `cases`, `sources`, and
-  `legal_violations` tables 1:1, so the API routes in app/api do not need
-  to change — only the implementation of getDb()/save.
-*/
+interface StatsSchema {
+  stats: StatEntry[];
+}
+
+const statsFile = path.join(process.cwd(), 'data', 'stats.json');
+const statsAdapter = new JSONFile<StatsSchema>(statsFile);
+const statsDb = new Low<StatsSchema>(statsAdapter, { stats: [] });
+
+export async function getStatsDb() {
+  await statsDb.read();
+  statsDb.data ||= { stats: [] };
+  return statsDb;
+}
