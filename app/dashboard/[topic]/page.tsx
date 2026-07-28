@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import topics from '@/data/topics.json';
-import { getDb } from '@/lib/db';
+import { getDb, getStatsDb } from '@/lib/db';
 import MapboxLayer from '@/components/map/MapboxLayer';
 import CaseSummaryChart from '@/components/charts/CaseSummaryChart';
+import AggregateStatsPanel from '@/components/charts/AggregateStatsPanel';
 
 const STATUS_LABEL: Record<string, string> = {
   alleged: 'Alleged',
@@ -15,6 +16,9 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
   const topic = topics.find((t) => t.slug === params.topic);
   const db = await getDb();
   const cases = db.data!.cases.filter((c) => c.topic_slug === params.topic && c.review_status === 'published');
+  const statsDb = await getStatsDb();
+  const stats = statsDb.data!.stats.filter((s) => s.topic_slug === params.topic);
+  const vendorStats = stats.filter((s) => s.metric_type === 'vendor_contract_count' || s.metric_type === 'vendor_contract_value');
 
   if (!topic) {
     return <div className="max-w-6xl mx-auto px-6 py-16 text-paper">Topic not found.</div>;
@@ -32,6 +36,12 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
         </div>
         <CaseSummaryChart cases={cases} />
       </div>
+
+      {vendorStats.length > 0 && (
+        <div className="mt-5">
+          <AggregateStatsPanel title="Top vendors by contract count (public procurement records)" stats={vendorStats} />
+        </div>
+      )}
 
       <div className="mt-10">
         <h2 className="font-mono text-xs uppercase tracking-widest text-paper/50 mb-4">
