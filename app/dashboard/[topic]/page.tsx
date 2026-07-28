@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import topics from '@/data/topics.json';
+import topicContext from '@/data/topic-context.json';
 import { getDb, getStatsDb } from '@/lib/db';
 import MapboxLayer from '@/components/map/MapboxLayer';
 import CaseSummaryChart from '@/components/charts/CaseSummaryChart';
 import AggregateStatsPanel from '@/components/charts/AggregateStatsPanel';
+import ContextPanel from '@/components/legal/ContextPanel';
 
 const STATUS_LABEL: Record<string, string> = {
   alleged: 'Alleged',
@@ -18,7 +20,6 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
   const cases = db.data!.cases.filter((c) => c.topic_slug === params.topic && c.review_status === 'published');
   const statsDb = await getStatsDb();
   const stats = statsDb.data!.stats.filter((s) => s.topic_slug === params.topic);
-  const vendorStats = stats.filter((s) => s.metric_type === 'vendor_contract_count' || s.metric_type === 'vendor_contract_value');
 
   if (!topic) {
     return <div className="max-w-6xl mx-auto px-6 py-16 text-paper">Topic not found.</div>;
@@ -30,18 +31,22 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
       <h1 className="font-display text-4xl font-semibold text-paper mt-2">{topic.title}</h1>
       <p className="text-paper/60 mt-2 max-w-2xl leading-relaxed">{topic.description}</p>
 
-      <div className="grid md:grid-cols-3 gap-5 mt-10">
+      <div className="mt-8">
+        <ContextPanel entries={(topicContext as Record<string, any[]>)[params.topic] || []} />
+      </div>
+
+      {stats.length > 0 && (
+        <div className="mt-5">
+          <AggregateStatsPanel title="Numerical insights — public records" stats={stats} />
+        </div>
+      )}
+
+      <div className="grid md:grid-cols-3 gap-5 mt-8">
         <div className="md:col-span-2">
           <MapboxLayer cases={cases} />
         </div>
         <CaseSummaryChart cases={cases} />
       </div>
-
-      {vendorStats.length > 0 && (
-        <div className="mt-5">
-          <AggregateStatsPanel title="Top vendors by contract count (public procurement records)" stats={vendorStats} />
-        </div>
-      )}
 
       <div className="mt-10">
         <h2 className="font-mono text-xs uppercase tracking-widest text-paper/50 mb-4">
