@@ -39,3 +39,24 @@ export interface Case {
   review_notes?: string;
   created_at: string;
 }
+
+export type StatMetricType =
+  | 'vendor_contract_count'
+  | 'vendor_contract_value'
+  | 'single_bid_rate'
+  | 'org_award_concentration'
+  | 'short_window_rate'
+  | 'topic_case_count';
+
+export interface StatEntry {
+  id: string;
+  topic_slug: string;
+  metric_type: StatMetricType;
+  label: string;
+  value: number;
+  unit: 'count' | 'inr' | 'percent';
+  scope?: string;
+  source_dataset: string;
+  source_url?: string;
+  computed_at: string;
+}
