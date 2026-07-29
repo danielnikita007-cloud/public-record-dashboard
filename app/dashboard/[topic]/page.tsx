@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import topics from '@/data/topics.json';
 import topicContext from '@/data/topic-context.json';
-import { getDb, getStatsDb } from '@/lib/db';
+import { getPublishedCasesByTopic, getStats } from '@/lib/db';
 import MapboxLayer from '@/components/map/MapboxLayer';
 import CaseSummaryChart from '@/components/charts/CaseSummaryChart';
 import AggregateStatsPanel from '@/components/charts/AggregateStatsPanel';
 import ContextPanel from '@/components/legal/ContextPanel';
+import StatCards from '@/components/charts/StatCards';
 
 const STATUS_LABEL: Record<string, string> = {
   alleged: 'Alleged',
@@ -16,10 +17,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 export default async function TopicDashboard({ params }: { params: { topic: string } }) {
   const topic = topics.find((t) => t.slug === params.topic);
-  const db = await getDb();
-  const cases = db.data!.cases.filter((c) => c.topic_slug === params.topic && c.review_status === 'published');
-  const statsDb = await getStatsDb();
-  const stats = statsDb.data!.stats.filter((s) => s.topic_slug === params.topic);
+  const cases = await getPublishedCasesByTopic(params.topic);
+  const stats = await getStats(params.topic);
 
   if (!topic) {
     return <div className="max-w-6xl mx-auto px-6 py-16 text-paper">Topic not found.</div>;
@@ -32,20 +31,27 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
       <p className="text-paper/60 mt-2 max-w-2xl leading-relaxed">{topic.description}</p>
 
       <div className="mt-8">
-        <ContextPanel entries={(topicContext as Record<string, any[]>)[params.topic] || []} />
+        <StatCards stats={stats} cases={cases} />
       </div>
 
-      {stats.length > 0 && (
-        <div className="mt-5">
-          <AggregateStatsPanel title="Numerical insights — public records" stats={stats} />
-        </div>
-      )}
-
-      <div className="grid md:grid-cols-3 gap-5 mt-8">
+      <div className="grid md:grid-cols-3 gap-5 mt-5">
         <div className="md:col-span-2">
+          {stats.length > 0 ? (
+            <AggregateStatsPanel title="Numerical insights — public records" stats={stats} />
+          ) : (
+            <div className="case-card p-6 text-sm text-ink/50 font-mono h-full flex items-center justify-center text-center">
+              No numeric data yet — run the data scanners (services/scraper) to populate this chart.
+            </div>
+          )}
+        </div>
+        <div className="space-y-5">
+          <CaseSummaryChart cases={cases} />
           <MapboxLayer cases={cases} />
         </div>
-        <CaseSummaryChart cases={cases} />
+      </div>
+
+      <div className="mt-8">
+        <ContextPanel entries={(topicContext as Record<string, any[]>)[params.topic] || []} />
       </div>
 
       <div className="mt-10">
