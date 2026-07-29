@@ -1,10 +1,9 @@
-import { getDb } from '@/lib/db';
+import { getCaseById } from '@/lib/db';
 import SourceCitation from '@/components/shared/SourceCitation';
 import LegalViolationPanel from '@/components/legal/LegalViolationPanel';
 
 export default async function CasePage({ params }: { params: { id: string } }) {
-  const db = await getDb();
-  const c = db.data!.cases.find((c) => c.id === params.id && c.review_status === 'published');
+  const c = await getCaseById(params.id);
 
   if (!c) {
     return <div className="max-w-3xl mx-auto px-6 py-16 text-paper">Case not found or not yet published.</div>;
