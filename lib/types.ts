@@ -60,3 +60,78 @@ export interface StatEntry {
   source_url?: string;
   computed_at: string;
 }
+
+/*
+  Public entity network — factual records about politicians, companies,
+  declared donations, and tender awards, plus a separate, human-reviewed
+  layer for any DOCUMENTED RELATIONSHIP between them.
+
+  Terminology is deliberately neutral throughout: this describes what a
+  primary source records, not a conclusion about wrongdoing.
+    "Scam"              -> not used. See `AuditObservation` (CAG finding) or
+                            `SingleBidContract` (a procurement pattern).
+    "Illegal land grab" -> `DisputedAcquisitionRecord` (a compensation/transfer
+                            discrepancy between two official figures).
+    "Corruption link"    -> `DocumentedBusinessRelationship` (a sourced,
+                            factual relationship — e.g. a declared donation
+                            or a company directorship — not an accusation).
+*/
+
+export interface Politician {
+  id: string;
+  name: string;
+  constituency?: string;
+  party?: string;
+  source_url: string;
+  source_note: string;
+  created_at: string;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  cin?: string;
+  source_url?: string;
+  created_at: string;
+}
+
+export interface DeclaredDonation {
+  id: string;
+  donor_name: string;
+  recipient_party: string;
+  amount_inr: number;
+  fiscal_year: string;
+  source_url: string;
+  source_note: string;
+  created_at: string;
+}
+
+export interface TenderRecord {
+  id: string;
+  company_id?: string;
+  company_name: string;
+  awarding_org: string;
+  value_inr?: number;
+  award_date?: string;
+  source_url: string;
+  created_at: string;
+}
+
+export type EntityType = 'politician' | 'company' | 'donation' | 'tender';
+export type NetworkReviewStatus = 'pending_review' | 'published' | 'rejected';
+
+export interface DocumentedBusinessRelationship {
+  id: string;
+  entity_a_type: EntityType;
+  entity_a_id: string;
+  entity_a_label: string;
+  entity_b_type: EntityType;
+  entity_b_id: string;
+  entity_b_label: string;
+  relationship_note: string;
+  evidence_urls: string[];
+  review_status: NetworkReviewStatus;
+  submitted_by?: string;
+  reviewed_by?: string;
+  created_at: string;
+}
