@@ -13,7 +13,8 @@ interface Sector {
 
 const COLORS = ['#1B2A3D', '#B8862E', '#3F6B4F', '#8C7A4E', '#6b7280', '#8B2E2E', '#4A6670', '#2E4045'];
 
-function formatCrore(n: number): string {
+function formatCrore(n: number | undefined | null): string {
+  if (n === undefined || n === null || isNaN(n)) return '—';
   if (n >= 100000) return `₹${(n / 100000).toFixed(2)} lakh cr`;
   return `₹${n.toLocaleString('en-IN')} cr`;
 }
@@ -87,20 +88,20 @@ export default function MacroBudgetTreemap() {
 
 function Tile(props: any) {
   const { x, y, width, height, index, name, size, sector } = props;
-  if (width < 2 || height < 2) return null;
-  const color = COLORS[index % COLORS.length];
+  if (width < 2 || height < 2 || size === undefined || size === null) return null;
+  const color = COLORS[(index ?? 0) % COLORS.length];
   const showLabel = width > 55 && height > 28;
-  const pct = sector ? `${sector.percent_of_total}%` : '';
+  const pct = sector?.percent_of_total !== undefined ? `${sector.percent_of_total}%` : '';
   return (
-    <g style={{ cursor: 'pointer' }} onClick={() => props.onSelect?.(sector)}>
+    <g style={{ cursor: sector ? 'pointer' : 'default' }} onClick={() => sector && props.onSelect?.(sector)}>
       <rect x={x} y={y} width={width} height={height} fill={color} stroke="#101826" strokeWidth={2} />
       {showLabel && (
         <>
           <text x={x + 8} y={y + 20} fontSize={13} fontFamily="IBM Plex Mono" fill="#EEE9DC" fontWeight={600}>
-            {name}
+            {name || ''}
           </text>
           <text x={x + 8} y={y + 38} fontSize={11} fontFamily="IBM Plex Mono" fill="#EEE9DCaa">
-            {formatCrore(size)} · {pct}
+            {formatCrore(size)} {pct && `· ${pct}`}
           </text>
         </>
       )}
