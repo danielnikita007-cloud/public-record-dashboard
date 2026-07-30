@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "deforestation",
+    "title": "Forest Land Diversion & Illegal Felling",
+    "description": "Tracks forest clearance approvals, compensatory afforestation compliance, and reported illegal felling, sourced from the Parivesh portal, state forest department records, and independent reporting."
+  },
+  {
+    "slug": "exam-leaks",
+    "title": "Examination Paper Leaks",
+    "description": "Tracks reported competitive-exam leak incidents, official inquiry outcomes, and re-examination orders."
+  },
+  {
+    "slug": "corruption",
+    "title": "Bureaucratic & Political Corruption",
+    "description": "Tracks cases with CAG findings, Lokayukta/Lokpal references, or chargesheets filed under the Prevention of Corruption Act."
+  },
+  {
+    "slug": "caste-certification",
+    "title": "Fake Caste Certification",
+    "description": "Tracks verified fraudulent caste-certificate cases and related court rulings."
+  },
+  {
+    "slug": "land-allocation",
+    "title": "Project & Land Allocation Scams",
+    "description": "Tracks land/project allocation disputes with CAG, court, or tribunal findings."
+  },
+  {
+    "slug": "corporate-monopolies",
+    "title": "Corporate Concentration & Financial Irregularities",
+    "description": "Tracks CCI, SEBI, and parliamentary committee findings related to market concentration and financial irregularities. Entries require a regulatory or court source — allegations without an official or on-record journalistic citation are not published."
+  }
+]

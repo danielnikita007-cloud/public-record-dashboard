@@ -1,0 +1,94 @@
+{
+  "fiscal_year": "2024-25",
+  "total_expenditure_inr_crore": 4820512,
+  "source_url": "https://prsindia.org/budgets/parliament/union-budget-2024-25-analysis",
+  "source_note": "PRS Legislative Research, Union Budget 2024-25 Analysis (Expenditure Budget, Union Budget 2024-25)",
+  "sectors": [
+    {
+      "name": "Defence",
+      "allocation_inr_crore": 621941,
+      "percent_of_total": 12.9,
+      "source_url": "https://www.deccanherald.com/amp/story/business%2Funion-budget%2Funion-budget-2024-defence-budget-pegged-at-rs-621-lakh-crore-for-2024-25-3117812",
+      "ground_reality": [
+        "Capital outlay: ₹1,72,000 crore (27.7% of total defence allocation), up 20.3% from 2023-24 actual expenditure.",
+        "75% of the modernisation budget (₹1,05,518 crore) is earmarked for procurement through domestic industries under 'Aatmanirbharta' in defence.",
+        "₹92,088 crore allocated for sustenance and operational readiness — maintenance facilities, ammunition procurement, resource mobility — a 48% increase over FY 2022-23.",
+        "Revenue vs capital split and multi-year procurement timelines for specific platforms are not itemised in the public budget document at this level of detail — verify against CAG defence audit reports for project-level figures."
+      ]
+    },
+    {
+      "name": "Road Transport & Highways",
+      "allocation_inr_crore": 278000,
+      "percent_of_total": 5.8,
+      "source_url": "https://prsindia.org/budgets/parliament/union-budget-2024-25-analysis",
+      "ground_reality": [
+        "This ministry's allocation grew 25% in 2023-24 alone, driven largely by increased investment in NHAI (National Highways Authority of India).",
+        "Project-level rework/maintenance-vs-construction-cost data is NOT available from the budget documents alone — this requires NHAI's own project completion reports and CAG performance audits of specific highway stretches, which have not yet been ingested into this dashboard.",
+        "See this dashboard's 'Land Allocation' topic for CAG findings on specific road-linked land and contract irregularities already sourced (e.g. Karnataka KIADB, Noida Authority cases)."
+      ]
+    },
+    {
+      "name": "Railways",
+      "allocation_inr_crore": 255000,
+      "percent_of_total": 5.4,
+      "source_url": "https://prsindia.org/files/budget/budget_parliament/2023/Booklet-DFG_2023-24.pdf",
+      "ground_reality": [
+        "Railways allocation grew 48.6% in 2023-24, the single largest percentage increase among the top 13 ministries that year.",
+        "Freight revenue reporting and station/track modernisation project-level data would need direct ingestion from Ministry of Railways annual reports — not yet connected here."
+      ]
+    },
+    {
+      "name": "Consumer Affairs, Food & Public Distribution",
+      "allocation_inr_crore": 213000,
+      "percent_of_total": 4.5,
+      "source_url": "https://prsindia.org/budgets/parliament/union-budget-2024-25-analysis",
+      "ground_reality": [
+        "Food subsidy alone is estimated at ₹2,05,250 crore in 2024-25, a 3.1% decrease from actual 2023-24 expenditure — the large majority of this ministry's total allocation.",
+        "Distribution-level data (ration shops, leakage estimates, Public Distribution System audits) would need ingestion from state-level PDS audit reports, not yet connected."
+      ]
+    },
+    {
+      "name": "Home Affairs",
+      "allocation_inr_crore": 203000,
+      "percent_of_total": 4.2,
+      "source_url": "https://www.deccanherald.com/ampstories/business/union-budget/budget-2024-25-ministry-wise-budget-allocation-2874952",
+      "ground_reality": [
+        "Covers central police forces, internal security, and Union Territory administration.",
+        "Granular breakdown (force-wise deployment costs, infrastructure spend) not available at budget-document level — would need Ministry of Home Affairs annual report ingestion."
+      ]
+    },
+    {
+      "name": "Rural Development",
+      "allocation_inr_crore": 177000,
+      "percent_of_total": 3.7,
+      "source_url": "https://prsindia.org/files/budget/budget_parliament/2024/Union_Budget_Analysis_2024-25.pdf",
+      "ground_reality": [
+        "MGNREGS (rural employment guarantee) has the highest single scheme allocation in this ministry at ₹86,000 crore — unchanged from the 2023-24 revised estimate.",
+        "Pradhan Mantri Awas Yojana (rural housing) allocation: ₹80,671 crore, up 49.1% over the 2023-24 revised estimate — though actual 2023-24 expenditure fell 32% short of its own budget estimate, mainly due to the rural component underperforming.",
+        "This underspend-vs-allocation gap is exactly the kind of 'ground reality vs promise' figure worth tracking further at the state level — not yet broken down by state in this dashboard."
+      ]
+    },
+    {
+      "name": "Chemicals & Fertilisers",
+      "allocation_inr_crore": 168000,
+      "percent_of_total": 3.5,
+      "source_url": "https://www.deccanherald.com/ampstories/business/union-budget/budget-2024-25-ministry-wise-budget-allocation-2874952",
+      "ground_reality": [
+        "Predominantly fertiliser subsidy (urea and nutrient-based subsidy schemes).",
+        "State-wise or crop-wise subsidy distribution data not available from the top-level budget document — would need Department of Fertilizers scheme-level data."
+      ]
+    },
+    {
+      "name": "Others",
+      "allocation_inr_crore": 3504571,
+      "percent_of_total": 72.7,
+      "source_url": "https://prsindia.org/budgets/parliament/union-budget-2024-25-analysis",
+      "ground_reality": [
+        "Consolidates every remaining ministry and expenditure head — including Education, Health, Agriculture, Environment/Forest & Climate Change, Communications, and interest payments (which alone are 24% of total central government expenditure).",
+        "Health: the Interim Budget 2024-25 allocated ₹98,761 crore to the health sector (Ministry of Health and Family Welfare receiving 92.1% of that), a 2.6% increase from the previous budget estimate — but health expenditure as a share of GDP continues to fall short of the National Health Policy's 2025 target, per independent budget analysis (CBGA India).",
+        "Education-specific allocation figures were not confirmed in the sources checked for this update — flagged for a follow-up search rather than estimated here.",
+        "This 'Others' category is intentionally broad per the brief's own 8-tile structure — each of these sub-sectors deserves its own dedicated breakdown, which is what this dashboard's individual topic pages (Deforestation, Land Allocation, etc.) are for."
+      ]
+    }
+  ]
+}
