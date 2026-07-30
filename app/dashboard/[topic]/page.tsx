@@ -7,6 +7,9 @@ import ContextPanel from '@/components/legal/ContextPanel';
 import StatCards from '@/components/charts/StatCards';
 import MetricGrid from '@/components/charts/MetricGrid';
 import CaseListWithToggle from '@/components/shared/CaseListWithToggle';
+import ObservatoryHeader from '@/components/shared/ObservatoryHeader';
+import ConcentrationScatter from '@/components/charts/ConcentrationScatter';
+import ConcentrationTreemap from '@/components/charts/ConcentrationTreemap';
 
 export default async function TopicDashboard({ params }: { params: { topic: string } }) {
   const topic = topics.find((t) => t.slug === params.topic);
@@ -19,6 +22,7 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
+      <ObservatoryHeader />
       <span className="font-mono text-xs text-gold tracking-widest uppercase">Sector</span>
       <h1 className="font-display text-4xl font-semibold text-paper mt-2">{topic.title}</h1>
       <p className="text-paper/60 mt-2 max-w-2xl leading-relaxed">{topic.description}</p>
@@ -30,6 +34,14 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
       {/* Metric grid replaces the map on sector views — click any card to drill down */}
       <div className="mt-8">
         <MetricGrid stats={stats} />
+      </div>
+
+      <div className="mt-5">
+        <ConcentrationTreemap stats={stats} />
+      </div>
+
+      <div className="mt-5">
+        <ConcentrationScatter stats={stats} />
       </div>
 
       {stats.length > 0 && (
