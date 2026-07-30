@@ -1,0 +1,45 @@
+{
+  "education": {
+    "title": "Education — Ground Reality",
+    "source_note": "UDISE+ 2023-24 / 2024-25 reports, Ministry of Education; Economic Survey 2024-25 (via PIB)",
+    "source_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2097864&reg=3&lang=2",
+    "headline_stats": [
+      { "label": "Schools (India, 2023-24)", "value": 1472000, "unit": "count" },
+      { "label": "Teachers (2024-25)", "value": 10122420, "unit": "count" },
+      { "label": "Students enrolled (2024-25)", "value": 246900000, "unit": "count" }
+    ],
+    "school_ownership_breakdown": [
+      { "label": "Government schools", "value": 69 },
+      { "label": "Private schools", "value": 22.5 },
+      { "label": "Government-aided / other", "value": 8.5 }
+    ],
+    "pupil_teacher_ratio_trend": [
+      { "level": "Foundational", "y2014_15": 15, "y2024_25": 10 },
+      { "level": "Preparatory", "y2014_15": 18, "y2024_25": 13 },
+      { "level": "Middle", "y2014_15": 26, "y2024_25": 17 },
+      { "level": "Secondary", "y2014_15": 31, "y2024_25": 21 }
+    ],
+    "ground_reality": [
+      "1,10,971 schools across India have only a single teacher, serving nearly 40 lakh students between them — an average of 36 students per teacher in these specific schools, per UDISE+ 2023-24.",
+      "12,964 schools reported zero enrolled students in 2023-24, while still employing 31,981 teachers between them — a real, sourced anomaly worth investigating at the state level (Madhya Pradesh and Andhra Pradesh account for the largest numbers of single-teacher schools).",
+      "Pupil-teacher ratios have genuinely improved at every level since 2014-15 and are now better than NEP 2020's recommended 1:30 standard across the board.",
+      "This dashboard does not yet have state-wise or district-wise school/teacher data ingested — the national picture above is real, but a true 'ground reality vs budget' comparison needs per-district figures cross-referenced with local education budget allocations, which is a follow-up ingestion task."
+    ]
+  },
+  "environment": {
+    "title": "Environment — Paris Agreement & Forest Fund Tracking",
+    "source_note": "Climate Action Tracker; PRS/CBGA budget analyses; India's NDC filings under UNFCCC",
+    "source_url": "https://climateactiontracker.org/countries/india/",
+    "ndc_targets": [
+      { "target": "Reduce emissions intensity of GDP", "goal": "45% below 2005 levels by 2030", "status": "On track — already ~36% reduced" },
+      { "target": "Non-fossil power capacity", "goal": "50% of installed capacity by 2030", "status": "Achieved in 2024 — 5 years early (242.78 GW, ~50% of 484.82 GW total)" },
+      { "target": "Additional carbon sink", "goal": "2.5–3 billion tonnes CO2-equivalent via forest/tree cover by 2030", "status": "Progress not independently confirmed in sources checked for this update" }
+    ],
+    "ground_reality": [
+      "CAMPA (Compensatory Afforestation Fund) utilisation remains poor — states are spending only a fraction of released funds, per independent climate-policy analysis. This matches the CAG findings already on this dashboard's Deforestation topic (e.g. the Uttarakhand case, where CAMPA funds were found diverted to non-forestry purchases).",
+      "India met its 50% non-fossil power capacity target five years ahead of the 2030 deadline — a genuinely verified, positive figure, not just a promise.",
+      "The forest carbon sink target (2.5–3 billion tonnes CO2-equivalent) does not have a clear, independently confirmed current progress figure in the sources checked here — flagged as a gap rather than estimated.",
+      "India missed the February 2025 deadline to submit updated 2035 NDC targets, a fact independently reported but with no single official explanation found in sources checked."
+    ]
+  }
+}
