@@ -1,19 +1,12 @@
-import Link from 'next/link';
 import topics from '@/data/topics.json';
 import topicContext from '@/data/topic-context.json';
 import { getPublishedCasesByTopic, getStats } from '@/lib/db';
-import MapboxLayer from '@/components/map/MapboxLayer';
 import CaseSummaryChart from '@/components/charts/CaseSummaryChart';
 import AggregateStatsPanel from '@/components/charts/AggregateStatsPanel';
 import ContextPanel from '@/components/legal/ContextPanel';
 import StatCards from '@/components/charts/StatCards';
-
-const STATUS_LABEL: Record<string, string> = {
-  alleged: 'Alleged',
-  under_investigation: 'Under investigation',
-  court_confirmed: 'Court confirmed',
-  closed: 'Closed',
-};
+import MetricGrid from '@/components/charts/MetricGrid';
+import CaseListWithToggle from '@/components/shared/CaseListWithToggle';
 
 export default async function TopicDashboard({ params }: { params: { topic: string } }) {
   const topic = topics.find((t) => t.slug === params.topic);
@@ -26,7 +19,7 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <span className="font-mono text-xs text-gold tracking-widest uppercase">Topic</span>
+      <span className="font-mono text-xs text-gold tracking-widest uppercase">Sector</span>
       <h1 className="font-display text-4xl font-semibold text-paper mt-2">{topic.title}</h1>
       <p className="text-paper/60 mt-2 max-w-2xl leading-relaxed">{topic.description}</p>
 
@@ -34,21 +27,19 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
         <StatCards stats={stats} cases={cases} />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-5 mt-5">
-        <div className="md:col-span-2">
-          {stats.length > 0 ? (
-            <AggregateStatsPanel title="Numerical insights — public records" stats={stats} />
-          ) : (
-            <div className="case-card p-6 text-sm text-ink/50 font-mono h-full flex items-center justify-center text-center">
-              No numeric data yet — run the data scanners (services/scraper) to populate this chart.
-            </div>
-          )}
-        </div>
-        <div className="space-y-5">
-          <CaseSummaryChart cases={cases} />
-          <MapboxLayer cases={cases} />
-        </div>
+      {/* Metric grid replaces the map on sector views — click any card to drill down */}
+      <div className="mt-8">
+        <MetricGrid stats={stats} />
       </div>
+
+      {stats.length > 0 && (
+        <div className="grid md:grid-cols-3 gap-5 mt-8">
+          <div className="md:col-span-2">
+            <AggregateStatsPanel title="Distribution — public records" stats={stats} />
+          </div>
+          <CaseSummaryChart cases={cases} />
+        </div>
+      )}
 
       <div className="mt-8">
         <ContextPanel entries={(topicContext as Record<string, any[]>)[params.topic] || []} />
@@ -56,24 +47,9 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
 
       <div className="mt-10">
         <h2 className="font-mono text-xs uppercase tracking-widest text-paper/50 mb-4">
-          Published cases ({cases.length})
+          Records ({cases.length})
         </h2>
-        {cases.length === 0 && (
-          <div className="case-card p-6 text-sm text-ink/50 font-mono">
-            No cases published yet for this topic. Use "Submit a case" to add a sourced entry for editorial review.
-          </div>
-        )}
-        <div className="space-y-3">
-          {cases.map((c) => (
-            <Link key={c.id} href={`/investigation/${c.id}`} className="case-card p-5 flex items-center justify-between hover:border-gold/60 border block">
-              <div>
-                <h3 className="font-display text-lg font-semibold">{c.title}</h3>
-                <p className="text-sm text-ink/60 mt-1">{c.state}{c.district ? `, ${c.district}` : ''} · {c.sources.length} source{c.sources.length !== 1 ? 's' : ''}</p>
-              </div>
-              <span className="status-tab bg-gold/10 text-ink border-ink/20">{STATUS_LABEL[c.status]}</span>
-            </Link>
-          ))}
-        </div>
+        <CaseListWithToggle cases={cases} />
       </div>
     </div>
   );
