@@ -1,3 +1,4 @@
+import VendorBarChart from '@/components/charts/VendorBarChart';
 import topics from '@/data/topics.json';
 import topicContext from '@/data/topic-context.json';
 import { getPublishedCasesByTopic, getStats } from '@/lib/db';
@@ -40,6 +41,12 @@ export default async function TopicDashboard({ params }: { params: { topic: stri
         <ConcentrationTreemap stats={stats} />
       </div>
 
+<div className="mt-5">
+  <VendorBarChart stats={stats} metricType="vendor_contract_count" title="Vendors by contract count" />
+</div>
+<div className="mt-5">
+  <VendorBarChart stats={stats} metricType="vendor_contract_value" title="Vendors by total contract value" />
+</div>
       <div className="mt-5">
         <ConcentrationScatter stats={stats} />
       </div>
