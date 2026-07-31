@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getDataHealthSummary, getSuspiciousStats, STALE_DAYS_THRESHOLD } from '@/lib/db';
 
 function daysSince(iso: string): number {
