@@ -2,6 +2,7 @@ import Link from 'next/link';
 import topics from '@/data/topics.json';
 import MacroBudgetTreemap from '@/components/charts/MacroBudgetTreemap';
 import ObservatoryHeader from '@/components/shared/ObservatoryHeader';
+import SectorDeepDives from '@/components/charts/SectorDeepDives';
 
 export default function HomePage() {
   return (
@@ -20,6 +21,13 @@ export default function HomePage() {
       </div>
 
       <MacroBudgetTreemap />
+
+      <div className="mt-10">
+        <h2 className="font-mono text-xs uppercase tracking-widest text-paper/50 mb-4">
+          Sector deep-dives — real ground-reality data
+        </h2>
+        <SectorDeepDives />
+      </div>
 
       <div className="mt-14">
         <h2 className="font-mono text-xs uppercase tracking-widest text-paper/50 mb-4">
