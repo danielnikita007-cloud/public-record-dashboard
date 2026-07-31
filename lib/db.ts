@@ -13,7 +13,7 @@ import { Case, StatEntry, CaseSource, LegalViolation, Politician, Company, Decla
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('render.com') ? { rejectUnauthorized: false } : undefined,
+  ssl: (process.env.DATABASE_URL?.includes('render.com') || process.env.DATABASE_URL?.includes('supabase.com')) ? { rejectUnauthorized: false } : undefined,
 });
 
 let schemaReady: Promise<void> | null = null;
