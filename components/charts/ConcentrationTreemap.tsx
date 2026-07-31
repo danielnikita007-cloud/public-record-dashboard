@@ -17,7 +17,12 @@ import { StatEntry } from '@/lib/types';
 
 type ViewMode = 'department' | 'vendor';
 
+function isBadNumber(value: unknown): value is null | undefined {
+  return value === undefined || value === null || (typeof value === 'number' && isNaN(value));
+}
+
 function formatInr(value: number): string {
+  if (isBadNumber(value)) return '—';
   if (value >= 1e7) return `₹${(value / 1e7).toFixed(1)} Cr`;
   if (value >= 1e5) return `₹${(value / 1e5).toFixed(1)} L`;
   return `₹${value.toLocaleString('en-IN')}`;
@@ -79,7 +84,15 @@ export default function ConcentrationTreemap({ stats }: { stats: StatEntry[] }) 
 
 function TreemapTile(props: any) {
   const { x, y, width, height, index, name, size, isVendor } = props;
+
+  // Recharts' Treemap internally creates wrapper/root nodes that carry no
+  // real data (undefined size, undefined name). Skip rendering a label for
+  // those entirely rather than letting formatInr/toFixed crash on undefined.
   if (width < 2 || height < 2) return null;
+  if (isBadNumber(size)) {
+    return <rect x={x} y={y} width={width} height={height} fill="none" stroke="none" />;
+  }
+
   const color = COLORS[index % COLORS.length];
   const showLabel = width > 60 && height > 30;
   return (
@@ -88,7 +101,7 @@ function TreemapTile(props: any) {
       {showLabel && (
         <>
           <text x={x + 6} y={y + 16} fontSize={11} fontFamily="IBM Plex Mono" fill="#101826" fontWeight={600}>
-            {name && name.length > 22 ? name.slice(0, 20) + '…' : name}
+            {name && name.length > 22 ? name.slice(0, 20) + '…' : (name ?? '')}
           </text>
           <text x={x + 6} y={y + 30} fontSize={10} fontFamily="IBM Plex Mono" fill="#101826aa">
             {isVendor ? formatInr(size) : `HHI ${size.toFixed(0)}`}
