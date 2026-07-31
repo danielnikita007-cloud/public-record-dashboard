@@ -3,13 +3,15 @@ import { useState } from 'react';
 import { StatEntry } from '@/lib/types';
 
 function formatValue(s: StatEntry): string {
+  const value = s?.value;
+  if (value === undefined || value === null || isNaN(value)) return '—';
   if (s.unit === 'inr') {
-    if (s.value >= 1e7) return `₹${(s.value / 1e7).toFixed(2)} Cr`;
-    if (s.value >= 1e5) return `₹${(s.value / 1e5).toFixed(2)} L`;
-    return `₹${s.value.toLocaleString('en-IN')}`;
+    if (value >= 1e7) return `₹${(value / 1e7).toFixed(2)} Cr`;
+    if (value >= 1e5) return `₹${(value / 1e5).toFixed(2)} L`;
+    return `₹${value.toLocaleString('en-IN')}`;
   }
-  if (s.unit === 'percent') return `${s.value.toFixed(1)}%`;
-  return s.value.toLocaleString('en-IN');
+  if (s.unit === 'percent') return `${value.toFixed(1)}%`;
+  return value.toLocaleString('en-IN');
 }
 
 /*

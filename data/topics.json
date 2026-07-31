@@ -12,16 +12,11 @@
   {
     "slug": "corruption",
     "title": "Bureaucratic & Political Corruption",
-    "description": "Tracks cases with CAG findings, Lokayukta/Lokpal references, or chargesheets filed under the Prevention of Corruption Act."
-  },
-  {
-    "slug": "caste-certification",
-    "title": "Fake Caste Certification",
-    "description": "Tracks verified fraudulent caste-certificate cases and related court rulings."
+    "description": "Tracks cases with CAG findings, Lokayukta/Lokpal references, chargesheets filed under the Prevention of Corruption Act, and verified fraudulent caste-certificate cases with related court rulings."
   },
   {
     "slug": "land-allocation",
-    "title": "Project & Land Allocation Scams",
+    "title": "Project & Land Allocation Discrepancies",
     "description": "Tracks land/project allocation disputes with CAG, court, or tribunal findings."
   },
   {

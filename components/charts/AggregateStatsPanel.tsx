@@ -3,14 +3,16 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { StatEntry } from '@/lib/types';
 
 function formatValue(entry: StatEntry): string {
+  const value = entry?.value;
+  if (value === undefined || value === null || isNaN(value)) return '—';
   if (entry.unit === 'inr') {
     // Indian numbering (crore/lakh) reads more naturally for this audience
-    if (entry.value >= 1e7) return `₹${(entry.value / 1e7).toFixed(2)} Cr`;
-    if (entry.value >= 1e5) return `₹${(entry.value / 1e5).toFixed(2)} L`;
-    return `₹${entry.value.toLocaleString('en-IN')}`;
+    if (value >= 1e7) return `₹${(value / 1e7).toFixed(2)} Cr`;
+    if (value >= 1e5) return `₹${(value / 1e5).toFixed(2)} L`;
+    return `₹${value.toLocaleString('en-IN')}`;
   }
-  if (entry.unit === 'percent') return `${entry.value.toFixed(1)}%`;
-  return entry.value.toLocaleString('en-IN');
+  if (entry.unit === 'percent') return `${value.toFixed(1)}%`;
+  return value.toLocaleString('en-IN');
 }
 
 export default function AggregateStatsPanel({
@@ -56,7 +58,7 @@ export default function AggregateStatsPanel({
             labelFormatter={(label) => label}
           />
           <Bar dataKey="value" fill="#B8862E" radius={[0, 3, 3, 0]}>
-            <LabelList dataKey="value" position="right" formatter={(v: number) => v.toLocaleString('en-IN')} style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', fill: '#000' }} />
+            <LabelList dataKey="value" position="right" formatter={(v: number) => (v === undefined || v === null || isNaN(v)) ? '' : v.toLocaleString('en-IN')} style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', fill: '#000' }} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

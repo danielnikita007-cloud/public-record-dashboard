@@ -34,8 +34,7 @@ LIST_URL = "https://cag.gov.in/en/audit-report/audit-report-list"
 TOPIC_KEYWORDS = {
     "deforestation": ["forest", "afforestation", "environment", "wildlife"],
     "land-allocation": ["land allotment", "land acquisition", "housing", "urban development"],
-    "corruption": ["irregularit", "misappropriation", "financial management", "public works"],
-    "caste-certification": ["social welfare", "scheduled caste", "scheduled tribe", "reservation"],
+    "corruption": ["irregularit", "misappropriation", "financial management", "public works", "scheduled caste", "scheduled tribe", "caste certificate"],
     "exam-leaks": ["education department", "examination", "school education"],
 }
 

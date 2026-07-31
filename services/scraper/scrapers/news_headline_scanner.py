@@ -29,8 +29,7 @@ DASHBOARD_API_URL = os.getenv("DASHBOARD_API_URL")
 TOPIC_QUERIES = {
     "deforestation": "illegal tree felling OR forest clearance violation India",
     "exam-leaks": "exam paper leak India",
-    "corruption": "CAG report corruption India",
-    "caste-certification": "fake caste certificate case India",
+    "corruption": "CAG report corruption India OR fake caste certificate case",
     "land-allocation": "land allocation scam India",
 }
 
