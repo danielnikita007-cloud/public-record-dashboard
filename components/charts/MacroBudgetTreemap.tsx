@@ -8,6 +8,12 @@ interface BreakdownItem {
   value_inr_crore: number;
 }
 
+interface CostComparison {
+  project: string;
+  estimated_cr_per_km: number;
+  actual_cr_per_km: number;
+}
+
 interface Sector {
   name: string;
   allocation_inr_crore: number;
@@ -15,6 +21,7 @@ interface Sector {
   source_url: string;
   ground_reality: string[];
   breakdown?: BreakdownItem[];
+  cost_comparisons?: CostComparison[];
 }
 
 const COLORS = ['#1B2A3D', '#B8862E', '#3F6B4F', '#8C7A4E', '#6b7280', '#8B2E2E', '#4A6670', '#2E4045'];
@@ -70,6 +77,35 @@ export default function MacroBudgetTreemap() {
 
             <p className="font-display text-3xl font-semibold mt-4">{formatCrore(selected.allocation_inr_crore)}</p>
             <p className="text-sm text-ink/60">{selected.percent_of_total}% of total Union Budget {budgetData.fiscal_year}</p>
+
+            {selected.cost_comparisons && selected.cost_comparisons.length > 0 && (
+              <div className="mt-6">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-2">
+                  Estimated vs. actual cost (₹ crore per km) — CAG-audited projects
+                </p>
+                <ResponsiveContainer width="100%" height={160}>
+                  <BarChart data={selected.cost_comparisons} layout="vertical" margin={{ left: 10, right: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#00000010" horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 10, fontFamily: 'IBM Plex Mono' }} />
+                    <YAxis type="category" dataKey="project" width={160} tick={{ fontSize: 9, fontFamily: 'IBM Plex Mono' }} />
+                    <Tooltip formatter={(v: number) => `₹${v} cr/km`} />
+                    <Bar dataKey="estimated_cr_per_km" name="Estimated" fill="#8C7A4E" radius={[0, 3, 3, 0]} />
+                    <Bar dataKey="actual_cr_per_km" name="Actual" fill="#8B2E2E" radius={[0, 3, 3, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {selected.name.includes('Consumer Affairs') && (
+              <div className="mt-4 bg-gold/10 border border-gold/30 rounded-sm p-3">
+                <p className="text-xs text-ink/80"><strong>What is this money for?</strong> Almost entirely the <strong>food subsidy</strong> — the gap the government pays between the cost of procuring/distributing foodgrain and the low price charged through ration shops under the National Food Security Act.</p>
+              </div>
+            )}
+            {selected.name.includes('Chemicals') && (
+              <div className="mt-4 bg-gold/10 border border-gold/30 rounded-sm p-3">
+                <p className="text-xs text-ink/80"><strong>What is this money for?</strong> Predominantly the <strong>fertiliser subsidy</strong> — the gap the government pays fertiliser companies between the market price and the low, controlled price farmers pay for urea and other fertilisers.</p>
+              </div>
+            )}
 
             {selected.breakdown && selected.breakdown.length > 0 && (
               <div className="mt-6">

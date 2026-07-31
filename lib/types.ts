@@ -40,25 +40,35 @@ export interface Case {
   created_at: string;
 }
 
+/*
+  Aggregate numeric statistics — factual counts/sums computed directly from
+  public government records (e.g. "Vendor X appears as awardee in N contracts
+  totaling ₹Y in the CPPP dataset"). These are NOT narrative claims about
+  wrongdoing, so unlike `Case` entries they do not require human review
+  before publishing — a count is either accurate to the source data or not,
+  there's no editorial judgment call being made. They always carry a
+  `source_dataset` and `computed_at` so readers can trace the number back
+  to where it came from and when it was last refreshed.
+*/
 export type StatMetricType =
-  | 'vendor_contract_count'
-  | 'vendor_contract_value'
-  | 'single_bid_rate'
-  | 'org_award_concentration'
-  | 'short_window_rate'
-  | 'topic_case_count';
+  | 'vendor_contract_count'      // how many contracts a named vendor won
+  | 'vendor_contract_value'      // total ₹ value awarded to a named vendor
+  | 'single_bid_rate'            // % of tenders in a scope with only 1 bidder
+  | 'org_award_concentration'    // how concentrated an organisation's awards are
+  | 'short_window_rate'          // % of tenders with a bid window under N days
+  | 'topic_case_count';          // published case counts per topic (for the homepage)
 
 export interface StatEntry {
   id: string;
   topic_slug: string;
   metric_type: StatMetricType;
-  label: string;
+  label: string;              // human-readable, e.g. "MegaWin Contractors Ltd"
   value: number;
   unit: 'count' | 'inr' | 'percent';
-  scope?: string;
-  source_dataset: string;
+  scope?: string;             // e.g. a state, organisation, or "national"
+  source_dataset: string;     // e.g. "CPPP aoc_tenders.db via data.gov.in"
   source_url?: string;
-  computed_at: string;
+  computed_at: string;        // ISO timestamp of when this number was generated
 }
 
 /*
@@ -82,7 +92,7 @@ export interface Politician {
   name: string;
   constituency?: string;
   party?: string;
-  source_url: string;
+  source_url: string;      // the ECI affidavit or official record this came from
   source_note: string;
   created_at: string;
 }
@@ -90,18 +100,18 @@ export interface Politician {
 export interface Company {
   id: string;
   name: string;
-  cin?: string;
+  cin?: string;            // Corporate Identification Number, if known
   source_url?: string;
   created_at: string;
 }
 
 export interface DeclaredDonation {
   id: string;
-  donor_name: string;
+  donor_name: string;      // company or individual, as declared
   recipient_party: string;
   amount_inr: number;
   fiscal_year: string;
-  source_url: string;
+  source_url: string;      // Election Commission / ADR filing
   source_note: string;
   created_at: string;
 }
@@ -120,15 +130,23 @@ export interface TenderRecord {
 export type EntityType = 'politician' | 'company' | 'donation' | 'tender';
 export type NetworkReviewStatus = 'pending_review' | 'published' | 'rejected';
 
+/*
+  A DocumentedBusinessRelationship is the only place two entities get
+  connected — and it ALWAYS starts as pending_review. Same rule as
+  every case on this site: a human must read the underlying sources and
+  confirm the relationship before it appears publicly. This describes a
+  connection ("X donated to Y the same year Z won a tender"), never an
+  allegation of wrongdoing.
+*/
 export interface DocumentedBusinessRelationship {
   id: string;
   entity_a_type: EntityType;
   entity_a_id: string;
-  entity_a_label: string;
+  entity_a_label: string;   // denormalized display name, so the review UI doesn't need joins
   entity_b_type: EntityType;
   entity_b_id: string;
   entity_b_label: string;
-  relationship_note: string;
+  relationship_note: string;  // factual description, e.g. "Donation recorded same fiscal year as tender award"
   evidence_urls: string[];
   review_status: NetworkReviewStatus;
   submitted_by?: string;

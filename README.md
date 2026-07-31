@@ -55,21 +55,29 @@ half-day addition using NextAuth) before you open submissions to other contribut
 
 ---
 
-## 3. Migrate to a real database (once the pilot has real content)
+## 3. Real database (Postgres) — required for anything you want to keep
 
-The file-based store (`lib/db.ts`) works for a low-traffic pilot but won't hold up under real public
-load or multiple simultaneous editors. When you're ready:
+Your site now uses a real Postgres database instead of a file that gets wiped on every
+Render redeploy. This is not optional anymore — the site will show database errors
+until this is set up.
 
-1. Create a free Postgres database at [supabase.com](https://supabase.com) (easiest option — has a
-   spreadsheet-like table editor, good for a non-technical admin).
-2. Run the `schema.sql` and `legal-reference` seed (from our earlier messages — I can regenerate
-   these as files if you want them bundled here too) in Supabase's SQL editor.
-3. Replace `lib/db.ts` with a Postgres client (`@supabase/supabase-js` or plain `pg`) pointed at
-   your Supabase connection string. Because `lib/types.ts` already matches the schema, none of the
-   page or API route code needs to change — only the three functions inside `lib/db.ts`.
-4. Add `DATABASE_URL` (or Supabase URL/key) to Vercel's environment variables.
+### Step A — Create the database on Render
+1. Render dashboard → **New +** → **PostgreSQL**
+2. Name it (e.g. `public-record-db`), choose the **Free** tier, click **Create Database**
+3. On the database's info page, copy the **Internal Database URL**
 
-I'm glad to do this migration for you when you're ready — it's a contained, mechanical change.
+### Step B — Connect your web service to it
+1. Go to your web service (the site itself) → **Environment**
+2. Add a variable: `DATABASE_URL` = (paste the Internal Database URL from Step A)
+3. Save — this triggers a redeploy automatically
+
+That's it — no manual table creation needed. The first request after deploy
+automatically creates the `cases` and `stats` tables if they don't exist yet.
+
+### Local development
+Add `DATABASE_URL` to your own `.env.local` file, pointing at any Postgres instance
+(a local install, or even the same Render database — Render also exposes an
+**External Database URL** for connecting from outside their network).
 
 ---
 

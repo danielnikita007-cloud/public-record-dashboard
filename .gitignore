@@ -1,7 +1,9 @@
-﻿node_modules
+node_modules
 .next
-.env
 .env.local
+.DS_Store
+
+# Scraper: large data files stay local, never committed
 services/scraper/data/*.db
-services/scraper/venv
-__pycache__
+services/scraper/.env
+

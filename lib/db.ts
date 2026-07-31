@@ -2,15 +2,18 @@ import { Pool } from 'pg';
 import { Case, StatEntry, CaseSource, LegalViolation, Politician, Company, DeclaredDonation, TenderRecord, DocumentedBusinessRelationship } from './types';
 
 /*
-  Real Postgres storage. DATABASE_URL must be set in your environment
-  (Render's or Supabase's connection string).
+  Real Postgres storage — replaces the file-based lowdb pilot store.
+  The old store lost all data on every Render redeploy/restart because
+  it wrote to a file on an ephemeral filesystem. This connects to a real
+  Render Postgres database instead, so data survives deploys.
+
+  DATABASE_URL must be set in your environment (Render's "Internal
+  Database URL" from your Postgres instance's dashboard page).
 */
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: (process.env.DATABASE_URL?.includes('render.com') || process.env.DATABASE_URL?.includes('supabase.co'))
-    ? { rejectUnauthorized: false }
-    : undefined,
+  ssl: process.env.DATABASE_URL?.includes('render.com') ? { rejectUnauthorized: false } : undefined,
 });
 
 let schemaReady: Promise<void> | null = null;
@@ -55,6 +58,8 @@ function ensureSchema(): Promise<void> {
       CREATE INDEX IF NOT EXISTS idx_cases_topic_status ON cases(topic_slug, review_status);
       CREATE INDEX IF NOT EXISTS idx_stats_topic ON stats(topic_slug);
 
+      -- Public entity network: factual entity tables (publish immediately —
+      -- these are declared facts from official filings, not accusations)
       CREATE TABLE IF NOT EXISTS politicians (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -95,6 +100,10 @@ function ensureSchema(): Promise<void> {
         created_at TIMESTAMPTZ NOT NULL DEFAULT now()
       );
 
+      -- Public entity network: the ONLY table where two entities get
+      -- linked. Unlike the tables above, this always starts as
+      -- pending_review — a documented relationship still requires a human
+      -- to confirm it before it's shown as connected on the public site.
       CREATE TABLE IF NOT EXISTS public_entity_network (
         id TEXT PRIMARY KEY,
         entity_a_type TEXT NOT NULL,
@@ -232,6 +241,8 @@ export async function getStats(topicSlug?: string, metricType?: string): Promise
   return result.rows.map(rowToStat);
 }
 
+// --- Public entity network: factual entity records (published immediately) ---
+
 function rowToPolitician(row: any): Politician {
   return { id: row.id, name: row.name, constituency: row.constituency ?? undefined, party: row.party ?? undefined,
     source_url: row.source_url, source_note: row.source_note, created_at: row.created_at?.toISOString?.() ?? row.created_at };
@@ -313,6 +324,8 @@ export async function getTenderRecords(): Promise<TenderRecord[]> {
   const result = await pool.query('SELECT * FROM tender_records ORDER BY created_at DESC');
   return result.rows.map(rowToTenderRecord);
 }
+
+// --- Public entity network: relationships (ALWAYS require human review) ---
 
 function rowToRelationship(row: any): DocumentedBusinessRelationship {
   return {

@@ -1,3 +1,7 @@
+// Approximate centroid coordinates for Indian states/UTs.
+// Used to auto-plot a case on the map from its `state` field alone, when
+// no precise lat/lng was given. Good enough for a state-level bubble map;
+// NOT precise enough for anything claiming exact incident locations.
 export const STATE_COORDS: Record<string, [number, number]> = {
   "Andhra Pradesh": [15.9129, 79.74],
   "Arunachal Pradesh": [28.218, 94.7278],

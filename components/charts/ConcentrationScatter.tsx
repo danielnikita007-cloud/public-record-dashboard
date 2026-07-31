@@ -124,6 +124,17 @@ export default function ConcentrationScatter({ stats }: { stats: StatEntry[] }) 
           </Scatter>
         </ScatterChart>
       </ResponsiveContainer>
+
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 pt-2 border-t border-black/10">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#B8862E' }} />
+          <span className="text-[11px] font-mono text-ink/60">Typical range</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#8B2E2E' }} />
+          <span className="text-[11px] font-mono text-ink/60">High concentration + high single-bid rate — worth a closer look</span>
+        </div>
+      </div>
     </div>
   );
 }
