@@ -1,3 +1,4 @@
+import { StatEntry, Case } from '@/lib/types';
 function isBadNumber(value: unknown): value is null | undefined {
   return value === undefined || value === null || (typeof value === 'number' && isNaN(value));
 }
