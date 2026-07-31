@@ -15,6 +15,7 @@ script, not a publishing decision.
 Every stat is stamped with its source dataset so it's always traceable.
 """
 import os
+import re
 import json
 import sqlite3
 from collections import defaultdict
@@ -30,11 +31,29 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "aoc_tenders.db"
 MAX_ROWS_TO_SCAN = 500_000
 SOURCE_DATASET = "CPPP aoc_tenders.db (via tender.sarthaksidhant.com, sourced from eprocure.gov.in)"
 
+# A single government contract above this is implausible for this dataset
+# (even India's largest individual infrastructure awards rarely exceed a
+# few thousand crore). Records above this are logged and skipped rather
+# than silently summed in — protects every downstream total from one
+# corrupted row inflating a vendor's entire aggregate.
+MAX_PLAUSIBLE_SINGLE_CONTRACT_INR = 5e11  # ₹50,000 crore
+
 
 def parse_inr(raw: str) -> float:
+    """Extracts the FIRST well-formed number from the raw string, instead
+    of concatenating every digit found anywhere in it. The old version
+    did `"".join(c for c in raw if c.isdigit() or c == '.')`, which mashes
+    together ALL numbers in a field into one garbage value if the source
+    text ever contains more than one number (e.g. a revised-from figure,
+    a stray date). This was the root cause of implausible vendor totals
+    like ₹34 lakh crore showing up on the Data Health page.
+    """
     if not raw:
         return 0.0
-    digits = "".join(c for c in raw if c.isdigit() or c == ".")
+    match = re.search(r"\d[\d,]*\.?\d*", raw)
+    if not match:
+        return 0.0
+    digits = match.group(0).replace(",", "")
     try:
         return float(digits) if digits else 0.0
     except ValueError:
@@ -74,6 +93,7 @@ def compute_vendor_aggregates(conn):
     counts = defaultdict(int)
     values = defaultdict(float)
     example_url = {}
+    skipped_implausible = 0
 
     for details_json, detail_url in cur:
         try:
@@ -83,9 +103,22 @@ def compute_vendor_aggregates(conn):
         vendor = (details.get("Name of the selected bidder(s)") or "").strip()
         if not vendor:
             continue
+
+        contract_value = parse_inr(details.get("Contract Value", ""))
+        if contract_value > MAX_PLAUSIBLE_SINGLE_CONTRACT_INR:
+            skipped_implausible += 1
+            print(
+                f"Skipping implausible single contract value for '{vendor}': "
+                f"{contract_value:,.2f} (raw field: {details.get('Contract Value', '')!r})"
+            )
+            continue
+
         counts[vendor] += 1
-        values[vendor] += parse_inr(details.get("Contract Value", ""))
+        values[vendor] += contract_value
         example_url.setdefault(vendor, detail_url)
+
+    if skipped_implausible:
+        print(f"Skipped {skipped_implausible} implausible contract value record(s) total.")
 
     # Only publish the top N by count/value — a full 4.9M-row publish isn't useful on a dashboard
     top_by_count = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:15]
