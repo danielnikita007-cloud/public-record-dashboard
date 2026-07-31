@@ -381,3 +381,109 @@ export async function rejectRelationship(id: string, reviewedBy: string): Promis
   );
   return (result.rowCount ?? 0) > 0;
 }
+
+// --- ADD THIS to lib/db.ts ---
+// Paste this function anywhere after the existing insertStat/getStats
+// functions (e.g. right after getStats). It reuses the same `pool` and
+// `ensureSchema()` already defined in the file — don't duplicate those.
+
+export interface DataHealthRow {
+  source_dataset: string;
+  topic_slug: string;
+  row_count: number;
+  last_computed: string;
+  min_value: number;
+  max_value: number;
+  avg_value: number;
+  unit: string;
+}
+
+export interface CaseHealthRow {
+  topic_slug: string;
+  review_status: string;
+  count: number;
+}
+
+// Threshold for flagging an INR stat as implausible: ₹10 lakh crore
+// (1e13). India's entire annual Union Budget expenditure is roughly
+// ₹50 lakh crore (5e13) — a SINGLE vendor/stat above 1e13 is almost
+// certainly a unit-mismatch or double-counting bug, not a real figure.
+// Adjust if you have a more precise domain-specific ceiling per metric_type.
+export const IMPLAUSIBLE_INR_THRESHOLD = 1e13;
+
+// A source that hasn't produced a new stat in this many days is flagged
+// as stale — helps catch a scraper silently failing.
+export const STALE_DAYS_THRESHOLD = 30;
+
+export async function getDataHealthSummary(): Promise<{
+  stats: DataHealthRow[];
+  cases: CaseHealthRow[];
+}> {
+  await ensureSchema();
+
+  const statsResult = await pool.query(`
+    SELECT
+      source_dataset,
+      topic_slug,
+      unit,
+      COUNT(*) AS row_count,
+      MAX(computed_at) AS last_computed,
+      MIN(value) AS min_value,
+      MAX(value) AS max_value,
+      AVG(value) AS avg_value
+    FROM stats
+    GROUP BY source_dataset, topic_slug, unit
+    ORDER BY last_computed DESC
+  `);
+
+  const casesResult = await pool.query(`
+    SELECT topic_slug, review_status, COUNT(*) AS count
+    FROM cases
+    GROUP BY topic_slug, review_status
+    ORDER BY topic_slug, review_status
+  `);
+
+  return {
+    stats: statsResult.rows.map((r) => ({
+      source_dataset: r.source_dataset,
+      topic_slug: r.topic_slug,
+      unit: r.unit,
+      row_count: Number(r.row_count),
+      last_computed: r.last_computed instanceof Date ? r.last_computed.toISOString() : r.last_computed,
+      min_value: Number(r.min_value),
+      max_value: Number(r.max_value),
+      avg_value: Number(r.avg_value),
+    })),
+    cases: casesResult.rows.map((r) => ({
+      topic_slug: r.topic_slug,
+      review_status: r.review_status,
+      count: Number(r.count),
+    })),
+  };
+}
+
+// Returns the individual stat rows that look implausible — the actual
+// records worth investigating, not just the aggregate that flags them.
+export async function getSuspiciousStats(): Promise<
+  { id: string; topic_slug: string; label: string; value: number; unit: string; source_dataset: string; computed_at: string }[]
+> {
+  await ensureSchema();
+  const result = await pool.query(
+    `SELECT id, topic_slug, label, value, unit, source_dataset, computed_at
+     FROM stats
+     WHERE unit = 'inr' AND value > $1
+     ORDER BY value DESC`,
+    [IMPLAUSIBLE_INR_THRESHOLD]
+  );
+  return result.rows.map((r) => ({
+    id: r.id,
+    topic_slug: r.topic_slug,
+    label: r.label,
+    value: Number(r.value),
+    unit: r.unit,
+    source_dataset: r.source_dataset,
+    computed_at: r.computed_at instanceof Date ? r.computed_at.toISOString() : r.computed_at,
+  }));
+}
+
+
